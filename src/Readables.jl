@@ -51,7 +51,7 @@ function readable(r::Readable, x::F, radix::Int=10) where {F<:AbstractFloat}
        ipart, fpart = split(str, r.decpoint)
        if occursin("e", fpart)
           fpart, epart = split(fpart, "e")
-          epart = epart[1] != '-' ? string("e+", epart) : string("e", epart)
+          epart = (epart[1] !== '-' && epart[1] !== '+') ? string("e+", epart) : string("e", epart)
        else
           epart = ""
        end
