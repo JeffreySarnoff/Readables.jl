@@ -18,6 +18,8 @@ struct Readable
     end
 end
 
+const READABLE = Readable()
+
 decpoint(x::Readable) = x.decpoint
 intsep(x::Readable) = x.intsep
 intgroup(x::Readable) = x.intgroup
@@ -52,6 +54,8 @@ function readable(r::Readable, x::I, radix::Int=10) where {I<:Signed}
     res = string(res, str[idx+1:idx+r.intgroup])
     return string(numsign, radixprefix(radix), res)   
 end
+
+readable(x::I, radix::Int=10) where {I<:Signed} = readable(READABLE, x, radix)
 
 function Base.BigInt(str::AbstractString)
    s = String(strip(str))
