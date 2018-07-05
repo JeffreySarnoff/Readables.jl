@@ -39,8 +39,28 @@ julia> val = (BigFloat(pi))^115; ival = trunc(BigInt, val); prn(ival)
 
 ```
 
-### Customize
+## Customize
 
 ```julia
 
-julia> config = setintsep(setdecpoint(','), '.')
+julia> config = setintsep(setintgroup(12), '.');
+
+julia> ival = trunc(BigInt, (BigFloat(pi))^64);
+julia> readable(config, ival)
+"65704006.445717084572.022626334540"
+```
+
+### exported configurables
+
+We assume a `Real` value has an integer componant and a fractional componant (either may be zero).
+
+`intgroup, fracgroup` is the number of digits used to form digit subsequences in the integer and fractional parts
+
+`intsep, fracsep` is the `Char` used to separate groups in the integer and fractional parts
+
+- decpoint, setdecpoint
+- intsep, fracsep, setintsep, setfracsep
+- intgroup, fracgroup, setintgroup, setfracgroup
+
+
+----
