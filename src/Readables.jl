@@ -36,7 +36,7 @@ setfracsep(x::Readable, fracsep::Char) = Readable(x.decpoint, x.intsep, x.intgro
 setfracgroup(x::Readable, fracgroup::Int) = Readable(x.decpoint, x.intsep, x.intgroup, x.fracsep, fracgroup)
 
 radixprefixes = Dict(2=>"0b", 8=>"0o", 10=>"", 16=>"0x")
-radixprefix(x::Int) = get(radixprefixes, x, string("0",x,"R"))
+radixprefix(x::Int) = get(radixprefixes, x, throw(ErrorException("radix $x is not supported")))
 
 function readable(r::Readable, x::I, radix::Int=10) where {I<:Signed}
     numsign = signbit(x) ? "-" : ""
