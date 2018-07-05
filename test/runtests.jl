@@ -19,7 +19,7 @@ using Readables, Test
 @test readable(1234.0) == "1,234.0"
 @test readable(12345.0) == "12,345.0"
 @test readable(123456.0) == "123,456.0"
-@test readable(1234567.0) == "1,234,567.0"
+@test readable(1234567.0) == "1.23456_7e+6"
 
 @test readable(0.12345) == "0.12345"
 @test readable(12.12345) == "12.12345"
