@@ -16,6 +16,9 @@ struct Readable
     function Readable()
         return new('.', ',', 3, '_', 5)
     end
+    function Readable(decpoint::Char, intsep::Char, intgroup::Int, fracsep::Char, fracgroup::Int)
+        return new(decpoint, intsep, intgroup, fracsep, fracgroup)
+    end
 end
 
 const READABLE = Readable()
