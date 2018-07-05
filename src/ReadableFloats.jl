@@ -53,4 +53,6 @@ function readable(r::Readable, x::I, radix::Int=10) where {I<:Signed}
     return string(numsign, radixprefix(radix), res)   
 end
 
+Base.BigInt(str::AbstractString) = BigInt(BigFloat(str))
+
 end # ReadableFloats
