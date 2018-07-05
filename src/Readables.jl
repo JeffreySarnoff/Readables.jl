@@ -49,16 +49,44 @@ function readable(r::Readable, x::I, radix::Int=10) where {I<:Signed}
     else
         res = ""
     end
+       
     while ngroups > 1
         res = string(res, str[idx+1:idx+r.intgroup], r.intsep)
         idx += r.intgroup
         ngroups -= 1
     end
     res = string(res, str[idx+1:idx+r.intgroup])
+       
     return string(numsign, radixprefix(radix), res)   
 end
 
 readable(x::I, radix::Int=10) where {I<:Signed} = readable(READABLE, x, radix)
+
+
+function readable_frac(r::Readable, x::I, radix::Int=10) where {I<:Signed}
+    signbit(x) && throw(ErrorException("negative fractional parts ($x) are not allowed"))
+    str = string(abs(x), base=radix)
+    ndigs = length(str)
+    ngroups, lastgroup = divrem(ndigs, r.fracgroup)
+    idx = 0
+    res = ""
+       
+    while ngroups > 1
+        res = string(res, str[idx+1:idx+r.fracgroup], r.fracsep)
+        idx += r.fracgroup
+        ngroups -= 1
+    end
+    if lastgroup == 0
+        res = string(res, str[idx+1:end])
+    elseif ngroups == 0
+        res = str
+    else
+        res = string(res, str[idx+1:idx+r.fracgroup], r.fracsep, str[idx+r.fracgroup+1:end])
+    end
+   
+    return res   
+end
+
 
 function Base.BigInt(str::AbstractString)
    s = String(strip(str))
