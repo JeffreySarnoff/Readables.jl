@@ -35,6 +35,12 @@ setintgroup(x::Readable, intgroup::Int) = Readable(x.decpoint, x.intsep, intgrou
 setfracsep(x::Readable, fracsep::Char) = Readable(x.decpoint, x.intsep, x.intgroup, fracsep, x.fracgroup)
 setfracgroup(x::Readable, fracgroup::Int) = Readable(x.decpoint, x.intsep, x.intgroup, x.fracsep, fracgroup)
 
+setdecpoint(decpoint::Char) = setdecpoint(READABLE, decpoint)
+setintsep(intsep::Char) = setintsep(READABLE, intsep)
+setintgroup(intgroup::Int) = setintgroup(READABLE, intgroup)
+setfracsep(fracsep::Char) = setfracsep(READABLDE, fracsep)
+setfracgroup(fracgroup::Int) = setfracgroup(READABLE, fracgroup)
+
 const radixprefixes = Dict(2=>"0b", 8=>"0o", 10=>"", 16=>"0x")
 function radixprefix(x::Int)
     res = get(radixprefixes, x, nothing)
