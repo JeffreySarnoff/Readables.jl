@@ -38,7 +38,7 @@ setfracgroup(x::Readable, fracgroup::Int) = Readable(x.decpoint, x.intsep, x.int
 radixprefixes = Dict(2=>"0b", 8=>"0o", 10=>"", 16=>"0x")
 radixprefix(x::Int) = get(radixprefixes, x, throw(ErrorException("radix $x is not supported")))
 
-function readable(r::Readable, x::I, radix::Int=10) where {I<:Signed}
+function readable_int(r::Readable, x::I, radix::Int=10) where {I<:Signed}
     numsign = signbit(x) ? "-" : ""
     str = string(abs(x), base=radix)
     ndigs = length(str)
@@ -60,7 +60,7 @@ function readable(r::Readable, x::I, radix::Int=10) where {I<:Signed}
     return string(numsign, radixprefix(radix), res)   
 end
 
-readable(x::I, radix::Int=10) where {I<:Signed} = readable(READABLE, x, radix)
+readable_int(x::I, radix::Int=10) where {I<:Signed} = readable(READABLE, x, radix)
 
 
 function readable_frac(r::Readable, x::I, radix::Int=10) where {I<:Signed}
@@ -87,7 +87,7 @@ function readable_frac(r::Readable, x::I, radix::Int=10) where {I<:Signed}
     return res   
 end
 
-
+readable_frac(x::I, radix::Int=10) where {I<:Signed} = readable_frac(READABLE, x, radix)
 function Base.BigInt(str::AbstractString)
    s = String(strip(str))
    nchars = length(s)
