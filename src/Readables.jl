@@ -1,4 +1,4 @@
-module ReadableFloats
+module Readables
 
 export readable,
        Readable,
@@ -64,4 +64,4 @@ function Base.BigInt(str::AbstractString)
    return res
 end
 
-end # ReadableFloats
+end # Readables
