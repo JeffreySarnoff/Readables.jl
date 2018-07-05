@@ -35,15 +35,13 @@ setintgroup(x::Readable, intgroup::Int) = Readable(x.decpoint, x.intsep, intgrou
 setfracsep(x::Readable, fracsep::Char) = Readable(x.decpoint, x.intsep, x.intgroup, fracsep, x.fracgroup)
 setfracgroup(x::Readable, fracgroup::Int) = Readable(x.decpoint, x.intsep, x.intgroup, x.fracsep, fracgroup)
 
-radixprefixes = Dict(2=>"0b", 8=>"0o", 10=>"", 16=>"0x")
+const radixprefixes = Dict(2=>"0b", 8=>"0o", 10=>"", 16=>"0x")
 function radixprefix(x::Int)
     res = get(radixprefixes, x, nothing)
     res === nothing && throw(ErrorException("radix $x is not supported"))
     return res
 end
 
-readable(r::Readable, x::I, radix::Int=10) where {I<:Signed} = readable_int(r, x, radix)
-readable(x::I, radix::Int=10) where {I<:Signed} = readable_int(x, radix)
 
 function readable(r::Readable, x::F, radix::Int=10) where {F<:AbstractFloat}
     str = string(x)
@@ -56,7 +54,11 @@ function readable(r::Readable, x::F, radix::Int=10) where {F<:AbstractFloat}
        string(ripart, r.decpoint, rfpart)
     end
 end
-    
+
+readable(x::F, radix::Int=10) where {F<:AbstractFloat} = readable(READABLE, x, radix)
+
+readable(r::Readable, x::I, radix::Int=10) where {I<:Signed} = readable_int(r, x, radix)
+readable(x::I, radix::Int=10) where {I<:Signed} = readable_int(x, radix)
        
 function readable_int(r::Readable, x::I, radix::Int=10) where {I<:Signed}
     numsign = signbit(x) ? "-" : ""
