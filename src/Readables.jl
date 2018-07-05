@@ -36,13 +36,36 @@ setfracsep(x::Readable, fracsep::Char) = Readable(x.decpoint, x.intsep, x.intgro
 setfracgroup(x::Readable, fracgroup::Int) = Readable(x.decpoint, x.intsep, x.intgroup, x.fracsep, fracgroup)
 
 radixprefixes = Dict(2=>"0b", 8=>"0o", 10=>"", 16=>"0x")
-radixprefix(x::Int) = get(radixprefixes, x, throw(ErrorException("radix $x is not supported")))
+function radixprefix(x::Int)
+    res = get(radixprefixes, x, nothing)
+    res === nothing && throw(ErrorException("radix $x is not supported"))
+    return res
+end
 
+readable(r::Readable, x::I, radix::Int=10) where {I<:Signed} = readable_int(r, x, radix)
+readable(x::I, radix::Int=10) where {I<:Signed} = readable_int(x, radix)
+
+function readable(r::Readable, x::F, radix::Int=10) where {F<:AbstractFloat}
+    str = string(x)
+    if !occursin(r.decpoint, str)
+       readable_int(r, BigInt(str), radix)
+    else
+       ipart, fpart = split(str, r.decpoint)
+       ripart = readable_int(r, BigInt(ipart), radix)
+       rfpart = readable_frac(r, BigInt(fpart), radix)
+       string(ripart, r.decpoint, rfpart)
+    end
+end
+    
+       
 function readable_int(r::Readable, x::I, radix::Int=10) where {I<:Signed}
     numsign = signbit(x) ? "-" : ""
     str = string(abs(x), base=radix)
     ndigs = length(str)
     ngroups, firstgroup = divrem(ndigs, r.intgroup)
+       
+    ngroups == 0 && return str
+              
     idx = firstgroup
     if idx > 0
         res = string(str[1:idx], r.intsep)
@@ -68,6 +91,9 @@ function readable_frac(r::Readable, x::I, radix::Int=10) where {I<:Signed}
     str = string(abs(x), base=radix)
     ndigs = length(str)
     ngroups, lastgroup = divrem(ndigs, r.fracgroup)
+       
+    ngroups == 0 && return str
+       
     idx = 0
     res = ""
        
@@ -78,8 +104,6 @@ function readable_frac(r::Readable, x::I, radix::Int=10) where {I<:Signed}
     end
     if lastgroup == 0
         res = string(res, str[idx+1:end])
-    elseif ngroups == 0
-        res = str
     else
         res = string(res, str[idx+1:idx+r.fracgroup], r.fracsep, str[idx+r.fracgroup+1:end])
     end
@@ -88,6 +112,8 @@ function readable_frac(r::Readable, x::I, radix::Int=10) where {I<:Signed}
 end
 
 readable_frac(x::I, radix::Int=10) where {I<:Signed} = readable_frac(READABLE, x, radix)
+
+
 function Base.BigInt(str::AbstractString)
    s = String(strip(str))
    nchars = length(s)
@@ -98,5 +124,7 @@ function Base.BigInt(str::AbstractString)
    setprecision(BigFloat, holdprec)
    return res
 end
+
+Base.BigInt(str::SubString) = BigInt(String(str))
 
 end # Readables
