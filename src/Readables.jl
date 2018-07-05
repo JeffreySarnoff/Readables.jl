@@ -49,9 +49,15 @@ function readable(r::Readable, x::F, radix::Int=10) where {F<:AbstractFloat}
        readable_int(r, BigInt(str), radix)
     else
        ipart, fpart = split(str, r.decpoint)
+       if occursin("e", fpart)
+          fpart, epart = split(fpart, "e")
+          epart = string("e", epart)
+       else
+          epart = ""
+       end
        ripart = readable_int(r, BigInt(ipart), radix)
        rfpart = readable_frac(r, BigInt(fpart), radix)
-       string(ripart, r.decpoint, rfpart)
+       string(ripart, r.decpoint, rfpart, epart)
     end
 end
 
