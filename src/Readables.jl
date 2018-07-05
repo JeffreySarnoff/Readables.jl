@@ -51,12 +51,12 @@ end
 
 function readable(r::Readable, x::F, radix::Int=10) where {F<:AbstractFloat}
     str = string(x)
-    if !occursin(r.decpoint, str)
+    if !occursin(READABLE.decpoint, str)
        readable_int(r, BigInt(str), radix)
     else
-       ipart, fpart = split(str, r.decpoint)
+       ipart, fpart = splitstr(str, READABLE.decpoint)
        if occursin("e", fpart)
-          fpart, epart = split(fpart, "e")
+          fpart, epart = splitstr(fpart, "e")
           epart = (epart[1] !== '-' && epart[1] !== '+') ? string("e+", epart) : string("e", epart)
        else
           epart = ""
@@ -129,7 +129,7 @@ readable_frac(x::I, radix::Int=10) where {I<:Signed} = readable_frac(READABLE, x
 
 
 function Base.BigInt(str::AbstractString)
-   s = String(strip(str))
+   s = stripstr(str)
    nchars = length(s)
    prec = ceil(Int, log2(10) * nchars) + 16
    holdprec = precision(BigFloat)
@@ -140,5 +140,9 @@ function Base.BigInt(str::AbstractString)
 end
 
 Base.BigInt(str::SubString) = BigInt(String(str))
+
+splitstr(str::AbstractString, at::Union{String, Char}) = String.(split(str, at))
+stripstr(str::AbstractString) = String(strip(str))
+
 
 end # Readables
