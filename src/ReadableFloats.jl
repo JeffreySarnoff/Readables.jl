@@ -53,6 +53,15 @@ function readable(r::Readable, x::I, radix::Int=10) where {I<:Signed}
     return string(numsign, radixprefix(radix), res)   
 end
 
-Base.BigInt(str::AbstractString) = BigInt(BigFloat(str))
+function Base.BigInt(str::AbstractString)
+    s = strip(str)
+    nchars = length(s)
+    prec = ceil(Int, log2(10) * nchars) + 16
+    holdprec = precision(BigFloat)
+    setprecision(BigFloat, prec)
+    res = BigInt(BigFloat(s))
+    setprecision(BigFloat, holdprec)
+    return res
+end
 
 end # ReadableFloats
