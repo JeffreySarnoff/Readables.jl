@@ -30,5 +30,27 @@ setintgroup(x::Readable, intgroup::Int) = Readable(x.decpoint, x.intsep, intgrou
 setfracsep(x::Readable, fracsep::Char) = Readable(x.decpoint, x.intsep, x.intgroup, fracsep, x.fracgroup)
 setfracgroup(x::Readable, fracgroup::Int) = Readable(x.decpoint, x.intsep, x.intgroup, x.fracsep, fracgroup)
 
+radixprefixes = Dict(2=>"0b", 8=>"0o", 10=>"", 16=>"0x")
+radixprefix(x::Int) = get(radixprefixes, x, string("0",x,"r"))
+
+function readable(r::Readable, x::I, radix::Int=10) where {I<:Signed}
+    numsign = signbit(x) ? "-" : ""
+    str = string(abs(x), base=radix)
+    ndigs = length(str)
+    ngroups, firstgroup = divrem(ndigs, r.intgroup)
+    idx = firstgroup
+    if idx > 0
+        res = string(str[1:idx], r.intsep)
+    else
+        res = ""
+    end
+    while ngroups > 1
+        res = string(res, str[idx+1:idx+r.intgroup], r.intsep)
+        idx += r.intgroup
+        ngroups -= 1
+    end
+    res = string(res, str[idx+1:idx+r.intgroup])
+    return string(numsign, radixprefix(radix), res)   
+end
 
 end # ReadableFloats
