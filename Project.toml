@@ -1,3 +1,6 @@
 name = "Readables"
-uuid = "9527ac66-80a7-11e8-11ea-d104af487fdd"
+uuid = "0d4725de-cd7c-5e44-8a85-a48caeef9fa5"
+repo = "https://github.com/JeffreySarnoff/Readables.jl.git"
+author = "Jeffrey Sarnoff"
+license = "MIT"
 version = "v0.0.1"
