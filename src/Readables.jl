@@ -55,7 +55,7 @@ function readable(r::Readable, x::R, radix::Int=10) where {R<:Real}
 end
 
 readable(r::Readable, ri::C, radix::Int=10) where {C<:Complex} =
-    string(readable(real(ri), radix), (signbit(imag(ri)) ? "-", "+"), readable(abs(imag(ri)), radix), "im")
+    string(readable(real(ri), radix), (signbit(imag(ri)) ? "-" : "+"), readable(abs(imag(ri)), radix), "im")
 
 function readable(r::Readable, str::String, radix::Int=10)
     if !occursin(READABLE.decpoint, str)
