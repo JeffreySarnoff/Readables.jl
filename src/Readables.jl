@@ -54,6 +54,9 @@ function readable(r::Readable, x::R, radix::Int=10) where {R<:Real}
     return readable(r, str, radix)
 end
 
+readable(r::Readable, ri::C, radix::Int=10) where {C<:Complex} =
+    string(readable(real(ri), radix), (signbit(imag(ri)) ? "-", "+"), readable(abs(imag(ri)), radix), "im")
+
 function readable(r::Readable, str::String, radix::Int=10)
     if !occursin(READABLE.decpoint, str)
        readable_int(r, BigInt(str), radix)
@@ -77,7 +80,10 @@ readable(x::F, radix::Int=10) where {F<:AbstractFloat} = readable(READABLE, x, r
 
 readable(r::Readable, x::I, radix::Int=10) where {I<:Signed} = readable_int(r, x, radix)
 readable(x::I, radix::Int=10) where {I<:Signed} = readable_int(x, radix)
-       
+
+readable(ri::C, radix::Int=10) where {C<:Complex} =
+    string(readable(real(ri), radix), (signbit(imag(ri)) ? "-", "+"), readable(abs(imag(ri)), radix), "im")
+
 function readable_int(r::Readable, x::I, radix::Int=10) where {I<:Signed}
     numsign = signbit(x) ? "-" : ""
     str = string(abs(x), base=radix)
