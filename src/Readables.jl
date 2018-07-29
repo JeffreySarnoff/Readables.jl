@@ -82,7 +82,7 @@ readable(r::Readable, x::I, radix::Int=10) where {I<:Signed} = readable_int(r, x
 readable(x::I, radix::Int=10) where {I<:Signed} = readable_int(x, radix)
 
 readable(ri::C, radix::Int=10) where {C<:Complex} =
-    string(readable(real(ri), radix), (signbit(imag(ri)) ? "-", "+"), readable(abs(imag(ri)), radix), "im")
+    string(readable(real(ri), radix), (signbit(imag(ri)) ? "-" : "+"), readable(abs(imag(ri)), radix), "im")
 
 function readable_int(r::Readable, x::I, radix::Int=10) where {I<:Signed}
     numsign = signbit(x) ? "-" : ""
