@@ -49,8 +49,12 @@ function radixprefix(x::Int)
 end
 
 
-function readable(r::Readable, x::F, radix::Int=10) where {F<:AbstractFloat}
+function readable(r::Readable, x::R, radix::Int=10) where {R<:Real}
     str = string(x)
+    return readable(r, str, radix)
+end
+
+function readable(r::Readable, str::String, radix::Int=10)
     if !occursin(READABLE.decpoint, str)
        readable_int(r, BigInt(str), radix)
     else
@@ -66,6 +70,8 @@ function readable(r::Readable, x::F, radix::Int=10) where {F<:AbstractFloat}
        string(ripart, r.decpoint, rfpart, epart)
     end
 end
+
+readable(x::String, radix::Int=10) = readable(READABLE, x, radix)
 
 readable(x::F, radix::Int=10) where {F<:AbstractFloat} = readable(READABLE, x, radix)
 
