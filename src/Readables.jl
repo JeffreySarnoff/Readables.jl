@@ -74,6 +74,9 @@ function readable(r::Readable, str::String, radix::Int=10)
     end
 end
 
+readable(io::IO, x::T, radix::Int=10) where {T<:Real} = print(io, readable(READABLE, string(x), radix))
+readable(x::T, radix::Int=10) where {T<:Real} = print(Base.stdout, readable(READABLE, string(x), radix))
+       
 readable(x::String, radix::Int=10) = readable(READABLE, x, radix)
 
 readable(x::F, radix::Int=10) where {F<:AbstractFloat} = readable(READABLE, x, radix)
