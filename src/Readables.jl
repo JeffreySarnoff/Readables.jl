@@ -160,4 +160,33 @@ splitstr(str::AbstractString, at::Union{String, Char}) = String.(split(str, at))
 stripstr(str::AbstractString) = String(strip(str))
 
 
+const IMAG = "im"
+
+function readable(x::T) where {T<:Complex}
+    re = real(x)
+    im = imag(x)
+    sgn = signbit(im) ? " - " : " + "
+    im = abs(im)
+    re_str = readable(string(re))
+    im_str = readable(string(im))
+    string(re_str, sgn, im_str, IMAG)
+end
+
+if @isdefined ArbComplex
+
+function readable(x::ArbComplex{P}) where {P}
+    re = real(x)
+    im = imag(x)
+    sgn = signbit(im) ? " - " : " + "
+    im = abs(im)
+    re_str = readable(string(re))
+    im_str = readable(string(im))
+    string(re_str, sgn, im_str, IMAG)
+end
+
+end # if @isdefined ArbComplex
+
+
+
+
 end # Readables
