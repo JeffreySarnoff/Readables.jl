@@ -5,7 +5,10 @@ export readable,
        decpoint, setdecpoint,
        intsep, setintsep, intgroup, setintgroup,
        fracsep, setfracsep, fracgroup, setfracgroup
-       
+
+const IMAG_UNIT_STR[1] = "𝛊"
+const DUAL_UNIT_STR[1] = "ε"
+
 struct Readable
     decpoint::Char
     intsep::Char
@@ -54,9 +57,6 @@ function readable(r::Readable, x::R, radix::Int=10) where {R<:Real}
     return readable(r, str, radix)
 end
 
-readable(r::Readable, ri::C, radix::Int=10) where {C<:Complex} =
-    string(readable(real(ri), radix), (signbit(imag(ri)) ? "-" : "+"), readable(abs(imag(ri)), radix), "im")
-
 function readable(r::Readable, str::String, radix::Int=10)
     if !occursin(READABLE.decpoint, str)
        readable_int(r, BigInt(str), radix)
@@ -84,8 +84,8 @@ readable(x::F, radix::Int=10) where {F<:AbstractFloat} = readable(READABLE, x, r
 readable(r::Readable, x::I, radix::Int=10) where {I<:Signed} = readable_int(r, x, radix)
 readable(x::I, radix::Int=10) where {I<:Signed} = readable_int(x, radix)
 
-readable(ri::C, radix::Int=10) where {C<:Complex} =
-    string(readable(real(ri), radix), (signbit(imag(ri)) ? "-" : "+"), readable(abs(imag(ri)), radix), "im")
+readable(ri::C, radix::Int=10) where {F, C<:Complex{F}} =
+    string(readable(real(ri), radix), (signbit(imag(ri)) ? "-" : "+"), readable(abs(imag(ri)), radix), IMAG_UNIT_STR[1])
 
 function readable_int(r::Readable, x::I, radix::Int=10) where {I<:Signed}
     numsign = signbit(x) ? "-" : ""
@@ -160,16 +160,55 @@ splitstr(str::AbstractString, at::Union{String, Char}) = String.(split(str, at))
 stripstr(str::AbstractString) = String(strip(str))
 
 
-const IMAG = "im"
-
-function readable(x::T) where {T<:Complex}
+function readable(r::Readable, x::T, base::Int=10) where {F, T<:Complex{F}}
     re = real(x)
     im = imag(x)
     sgn = signbit(im) ? " - " : " + "
     im = abs(im)
-    re_str = readable(string(re))
-    im_str = readable(string(im))
-    string(re_str, sgn, im_str, IMAG)
+    re_str = readable(r, string(re), base)
+    im_str = readable(r, string(im), base)
+    string(re_str, sgn, im_str, IMAG_UNIT_STR[1])
 end
+
+readable(x::T, base::Int=10) where {F, T<:Complex{F}} =
+    readable(READABLE, x, base)
+
+function readable(r::Readable, x::T, y::T, base::Int=10, unitstr::String) where {T<:Real}
+    sgn = signbit(y) ? " - " : " + "
+    y = abs(y)
+    xstr = readable(string(x))
+    ystr = readable(string(y))
+    string(xstr, sgn, ystr, unitstr)
+end
+
+readable(x::T, y::T, base::Int=10, unitstr::String) where {T<:Real} =
+    readable(READABLE, x, y, base, unitstr)
+
+function readable(r::Readable, x::T, base::Int=10) where {T<:Number}
+     if hasmethod(T, real)
+        re = real(x)      
+        if hasmethod(T, imag)
+            im = imag(x)
+            if isa(im, Real)         
+                readable(r, re, im, base, IMAG_UNIT_STR[1])
+            else
+                throw(DomainError("$T is not supported"))
+            end
+        elseif hasmethod(T, dual)
+            du = dual(x)
+            if isa(im, Real)         
+                readable(r, re, du, base, DUAL_UNIT_STR[1])
+            else
+                throw(DomainError("$T is not supported"))
+            end
+        else
+            throw(DomainError("$T is not supported"))
+        end
+    end           
+    throw(DomainError("$T is not supported"))
+end
+
+readable(x::T, base::Int=10) where {T<:Number} =
+    readable(READABLE, x, base)
 
 end # Readables
