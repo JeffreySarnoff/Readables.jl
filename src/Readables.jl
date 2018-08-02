@@ -182,16 +182,16 @@ readable(x::T, y::T, unitstr::String, base::Int=10) where {T<:Real} =
     readable(READABLE, x, y, unitstr, base)
 
 function readable(r::Readable, x::T, base::Int=10) where {T<:Number}
-     if hasmethod(T, real)
+     if hasmethod(real, (T,))
         re = real(x)      
-        if hasmethod(T, imag)
+        if hasmethod(imag, (T,))
             im = imag(x)
             if isa(im, Real)         
                 readable(r, re, im, IMAG_UNIT_STR[1], base)
             else
                 throw(DomainError("$T is not supported"))
             end
-        elseif hasmethod(T, dual)
+        elseif hasmethod(dual, (T,))
             du = dual(x)
             if isa(im, Real)         
                 readable(r, re, du, DUAL_UNIT_STR[1], base)
