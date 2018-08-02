@@ -201,8 +201,9 @@ function readable(r::Readable, x::T, base::Int=10) where {T<:Number}
         else
             throw(DomainError("$T is not supported"))
         end
-    end           
-    throw(DomainError("$T is not supported"))
+    else           
+       throw(DomainError("$T is not supported"))
+    end   
 end
 
 readable(x::T, base::Int=10) where {T<:Number} =
