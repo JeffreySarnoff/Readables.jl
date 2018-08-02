@@ -84,9 +84,6 @@ readable(x::F, radix::Int=10) where {F<:AbstractFloat} = readable(READABLE, x, r
 readable(r::Readable, x::I, radix::Int=10) where {I<:Signed} = readable_int(r, x, radix)
 readable(x::I, radix::Int=10) where {I<:Signed} = readable_int(x, radix)
 
-readable(ri::C, radix::Int=10) where {F, C<:Complex{F}} =
-    string(readable(real(ri), radix), (signbit(imag(ri)) ? "-" : "+"), readable(abs(imag(ri)), radix), IMAG_UNIT_STR[1])
-
 function readable_int(r::Readable, x::I, radix::Int=10) where {I<:Signed}
     numsign = signbit(x) ? "-" : ""
     str = string(abs(x), base=radix)
@@ -173,7 +170,7 @@ end
 readable(x::T, base::Int=10) where {F, T<:Complex{F}} =
     readable(READABLE, x, base)
 
-function readable(r::Readable, x::T, y::T, base::Int=10, unitstr::String) where {T<:Real}
+function readable(r::Readable, x::T, y::T, unitstr::String, base::Int=10)  where {T<:Real}
     sgn = signbit(y) ? " - " : " + "
     y = abs(y)
     xstr = readable(string(x))
@@ -181,8 +178,8 @@ function readable(r::Readable, x::T, y::T, base::Int=10, unitstr::String) where 
     string(xstr, sgn, ystr, unitstr)
 end
 
-readable(x::T, y::T, base::Int=10, unitstr::String) where {T<:Real} =
-    readable(READABLE, x, y, base, unitstr)
+readable(x::T, y::T, unitstr::String, base::Int=10) where {T<:Real} =
+    readable(READABLE, x, y, unitstr, base)
 
 function readable(r::Readable, x::T, base::Int=10) where {T<:Number}
      if hasmethod(T, real)
@@ -190,14 +187,14 @@ function readable(r::Readable, x::T, base::Int=10) where {T<:Number}
         if hasmethod(T, imag)
             im = imag(x)
             if isa(im, Real)         
-                readable(r, re, im, base, IMAG_UNIT_STR[1])
+                readable(r, re, im, IMAG_UNIT_STR[1], base)
             else
                 throw(DomainError("$T is not supported"))
             end
         elseif hasmethod(T, dual)
             du = dual(x)
             if isa(im, Real)         
-                readable(r, re, du, base, DUAL_UNIT_STR[1])
+                readable(r, re, du, DUAL_UNIT_STR[1], base)
             else
                 throw(DomainError("$T is not supported"))
             end
