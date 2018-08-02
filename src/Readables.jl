@@ -6,8 +6,8 @@ export readable,
        intsep, setintsep, intgroup, setintgroup,
        fracsep, setfracsep, fracgroup, setfracgroup
 
-const IMAG_UNIT_STR[1] = "𝛊"
-const DUAL_UNIT_STR[1] = "ε"
+const IMAG_UNIT_STR = ["𝛊"]
+const DUAL_UNIT_STR = ["ε"]
 
 struct Readable
     decpoint::Char
