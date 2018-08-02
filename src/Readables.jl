@@ -1,7 +1,7 @@
 module Readables
 
-export readable,
-       Readable,
+export Readable,
+       readable, readablestring,
        decpoint, setdecpoint,
        intsep, setintsep, intgroup, setintgroup,
        fracsep, setfracsep, fracgroup, setfracgroup
@@ -44,22 +44,179 @@ setintgroup(intgroup::Int) = setintgroup(READABLE, intgroup)
 setfracsep(fracsep::Char) = setfracsep(READABLDE, fracsep)
 setfracgroup(fracgroup::Int) = setfracgroup(READABLE, fracgroup)
 
-const radixprefixes = Dict(2=>"0b", 8=>"0o", 10=>"", 16=>"0x")
-function radixprefix(x::Int)
-    res = get(radixprefixes, x, nothing)
-    res === nothing && throw(ErrorException("radix $x is not supported"))
+const baseprefixes = Dict(2=>"0b", 8=>"0o", 10=>"", 16=>"0x")
+
+function baseprefix(x::Int)
+    res = get(baseprefixes, x, nothing)
+    res === nothing && throw(ErrorException("base $x is not supported"))
     return res
 end
 
 
-function readable(r::Readable, x::R, radix::Int=10) where {R<:Real}
-    str = string(x)
-    return readable(r, str, radix)
+
+
+
+readablestring(r::Readable, x::T, base::Int=10) where {T<:Signed} =
+    readable_int(r, x, base)
+
+readablestring(x::T, base::Int=10) where {T<:Signed} =
+    readablestring(READABLE, x, base)
+
+function readable(io::IO, r::Readable, x::T, base::Int=10) where {T<:Signed}
+    str = readablestring(r, x, base)
+    print(io, str)
 end
 
-function readable(r::Readable, str::String, radix::Int=10)
+readable(io::IO, x::T, base::Int=10) where {T<:Signed} =
+    readable(io, READABLE, x, base)
+
+readable(r::Readable, x::T, base::Int=10) where {T<:Signed} =
+    readable(Base.stdout, r, x, base)
+
+readable(x::T, base::Int=10) where {F, T<:Signed} =
+    readable(Base.stdout, READABLE, x, base)
+
+
+function readablestring(r::Readable, x::T, base::Int=10) where {T<:AbstractFloat}
+    str = string(x)
+    return readable(r, str, base)
+end
+
+readablestring(x::T, base::Int=10) where {T<:AbstractFloat} =
+    readablestring(READABLE, x, base)
+
+function readable(io::IO, r::Readable, x::T, base::Int=10) where {T<:AbstractFloat}
+    str = readablestring(r, x, base)
+    print(io, str)
+end
+
+readable(io::IO, x::T, base::Int=10) where {T<:AbstractFloat} =
+    readable(io, READABLE, x, base)
+
+readable(r::Readable, x::T, base::Int=10) where {T<:AbstractFloat} =
+    readable(Base.stdout, r, x, base)
+
+readable(x::T, base::Int=10) where {F, T<:AbstractFloat} =
+    readable(Base.stdout, READABLE, x, base)
+
+
+
+
+function readablestring(r::Readable, x::T, base::Int=10) where {T<:Real}
+    str = string(x)
+    return readablestring(r, str, base)
+end
+
+readablestring(x::T, base::Int=10) where {T<:Real} =
+    readablestring(READABLE, x, base)
+
+function readable(io::IO, r::Readable, x::T, base::Int=10) where {T<:Real}
+    str = readablestring(r, x, base)
+    print(io, str)
+end
+
+readable(io::IO, x::T, base::Int=10) where {T<:Real} =
+    readable(io, READABLE, x, base)
+
+readable(r::Readable, x::T, base::Int=10) where {T<:Real} =
+    readable(Base.stdout, r, x, base)
+
+readable(x::T, base::Int=10) where {F, T<:Real} =
+    readable(Base.stdout, READABLE, x, base)
+
+
+
+function readablestring(r::Readable, x::T, base::Int=10) where {F, T<:Complex{F}}
+    re = real(x)
+    im = imag(x)
+    sgn = signbit(im) ? " - " : " + "
+    im = abs(im)
+    re_str = readable(r, string(re), base)
+    im_str = readable(r, string(im), base)
+    string(re_str, sgn, im_str, IMAG_UNIT_STR[1])
+end
+
+readablestring(x::T, base::Int=10) where {F, T<:Complex{F}} =
+    readablestring(READABLE, x, base)
+
+function readable(io::IO, r::Readable, x::T, base::Int=10) where {F, T<:Complex{F}}
+    str = readablestring(r, x, base)
+    print(io, str)
+end
+
+readable(io::IO, x::T, base::Int=10) where {F, T<:Complex{F}} =
+    readable(io, READABLE, x, base)
+
+readable(r::Readable, x::T, base::Int=10) where {F, T<:Complex{F}} =
+    readable(Base.stdout, r, x, base)
+
+readable(x::T, base::Int=10) where {F, T<:Complex{F}} =
+    readable(Base.stdout, READABLE, x, base)
+
+
+
+function readablestring(r::Readable, x::T, base::Int=10) where {T<:Number}
+     if hasmethod(real, (T,))
+        re = real(x)      
+        if hasmethod(imag, (T,))
+            im = imag(x)
+            if isa(im, Real)         
+                readablestring(r, re, im, IMAG_UNIT_STR[1], base)
+            else
+                throw(DomainError("$T is not supported"))
+            end
+        elseif hasmethod(dual, (T,))
+            du = dual(x)
+            if isa(im, Real)         
+                readablestring(r, re, du, DUAL_UNIT_STR[1], base)
+            else
+                throw(DomainError("$T is not supported"))
+            end
+        else
+            throw(DomainError("$T is not supported"))
+        end
+    else           
+       throw(DomainError("$T is not supported"))
+    end   
+end
+
+readablestring(x::T, base::Int=10) where {T<:Number} =
+    readablestring(READABLE, x, base)
+
+function readablestring(r::Readable, x::T, y::T, unitstr::String, base::Int=10)  where {T<:Real}
+    sgn = signbit(y) ? " - " : " + "
+    y = abs(y)
+    xstr = readablestring(r, x, base)
+    ystr = readablestring(r, y, base)
+    string(xstr, sgn, ystr, unitstr)
+end
+
+readablestring(x::T, y::T, unitstr::String, base::Int=10) where {T<:Real} =
+    readablestring(READABLE, x, y, unitstr, base)
+
+
+function readable(io::IO, r::Readable, x::T, base::Int=10) where {T<:Number}
+    str = readablestring(r, x, base)
+    print(io, str)
+end
+
+readable(io::IO, x::T, base::Int=10) where {T<:Number} =
+    readable(io, READABLE, x, base)
+
+readable(r::Readable, x::T, base::Int=10) where {T<:Number} =
+    readable(Base.stdout, r, x, base)
+
+readable(x::T, base::Int=10) where {T<:Number} =
+    readable(Base.stdout, READABLE, x, base)
+
+
+
+splitstr(str::AbstractString, at::Union{String, Char}) = String.(split(str, at))
+stripstr(str::AbstractString) = String(strip(str))
+
+function readablestring(r::Readable, str::String, base::Int=10)
     if !occursin(READABLE.decpoint, str)
-       readable_int(r, BigInt(str), radix)
+       readable_int(r, BigInt(str), base)
     else
        ipart, fpart = splitstr(str, READABLE.decpoint)
        if occursin("e", fpart)
@@ -68,25 +225,21 @@ function readable(r::Readable, str::String, radix::Int=10)
        else
           epart = ""
        end
-       ripart = readable_int(r, BigInt(ipart), radix)
-       rfpart = readable_frac(r, BigInt(fpart), radix)
+       ripart = readable_int(r, BigInt(ipart), base)
+       rfpart = readable_frac(r, BigInt(fpart), base)
        string(ripart, r.decpoint, rfpart, epart)
     end
 end
 
-readable(io::IO, x::T, radix::Int=10) where {T<:Real} = print(io, readable(READABLE, string(x), radix))
-readable(x::T, radix::Int=10) where {T<:Real} = print(Base.stdout, readable(READABLE, string(x), radix))
        
-readable(x::String, radix::Int=10) = readable(READABLE, x, radix)
+readablestring(x::String, base::Int=10) =
+    readablestring(READABLE, x, base)
 
-readable(x::F, radix::Int=10) where {F<:AbstractFloat} = readable(READABLE, x, radix)
 
-readable(r::Readable, x::I, radix::Int=10) where {I<:Signed} = readable_int(r, x, radix)
-readable(x::I, radix::Int=10) where {I<:Signed} = readable_int(x, radix)
 
-function readable_int(r::Readable, x::I, radix::Int=10) where {I<:Signed}
+function readable_int(r::Readable, x::I, base::Int=10) where {I<:Signed}
     numsign = signbit(x) ? "-" : ""
-    str = string(abs(x), base=radix)
+    str = string(abs(x), base=base)
     ndigs = length(str)
     ngroups, firstgroup = divrem(ndigs, r.intgroup)
        
@@ -106,15 +259,15 @@ function readable_int(r::Readable, x::I, radix::Int=10) where {I<:Signed}
     end
     res = string(res, str[idx+1:idx+r.intgroup])
        
-    return string(numsign, radixprefix(radix), res)   
+    return string(numsign, baseprefix(base), res)   
 end
 
-readable_int(x::I, radix::Int=10) where {I<:Signed} = readable(READABLE, x, radix)
+readable_int(x::I, base::Int=10) where {I<:Signed} = readable(READABLE, x, base)
 
 
-function readable_frac(r::Readable, x::I, radix::Int=10) where {I<:Signed}
+function readable_frac(r::Readable, x::I, base::Int=10) where {I<:Signed}
     signbit(x) && throw(ErrorException("negative fractional parts ($x) are not allowed"))
-    str = string(abs(x), base=radix)
+    str = string(abs(x), base=base)
     ndigs = length(str)
     ngroups, lastgroup = divrem(ndigs, r.fracgroup)
        
@@ -137,7 +290,7 @@ function readable_frac(r::Readable, x::I, radix::Int=10) where {I<:Signed}
     return res   
 end
 
-readable_frac(x::I, radix::Int=10) where {I<:Signed} = readable_frac(READABLE, x, radix)
+readable_frac(x::I, base::Int=10) where {I<:Signed} = readable_frac(READABLE, x, base)
 
 
 function Base.BigInt(str::AbstractString)
@@ -153,60 +306,5 @@ end
 
 Base.BigInt(str::SubString) = BigInt(String(str))
 
-splitstr(str::AbstractString, at::Union{String, Char}) = String.(split(str, at))
-stripstr(str::AbstractString) = String(strip(str))
-
-
-function readable(r::Readable, x::T, base::Int=10) where {F, T<:Complex{F}}
-    re = real(x)
-    im = imag(x)
-    sgn = signbit(im) ? " - " : " + "
-    im = abs(im)
-    re_str = readable(r, string(re), base)
-    im_str = readable(r, string(im), base)
-    string(re_str, sgn, im_str, IMAG_UNIT_STR[1])
-end
-
-readable(x::T, base::Int=10) where {F, T<:Complex{F}} =
-    readable(READABLE, x, base)
-
-function readable(r::Readable, x::T, y::T, unitstr::String, base::Int=10)  where {T<:Real}
-    sgn = signbit(y) ? " - " : " + "
-    y = abs(y)
-    xstr = readable(string(x))
-    ystr = readable(string(y))
-    string(xstr, sgn, ystr, unitstr)
-end
-
-readable(x::T, y::T, unitstr::String, base::Int=10) where {T<:Real} =
-    readable(READABLE, x, y, unitstr, base)
-
-function readable(r::Readable, x::T, base::Int=10) where {T<:Number}
-     if hasmethod(real, (T,))
-        re = real(x)      
-        if hasmethod(imag, (T,))
-            im = imag(x)
-            if isa(im, Real)         
-                readable(r, re, im, IMAG_UNIT_STR[1], base)
-            else
-                throw(DomainError("$T is not supported"))
-            end
-        elseif hasmethod(dual, (T,))
-            du = dual(x)
-            if isa(im, Real)         
-                readable(r, re, du, DUAL_UNIT_STR[1], base)
-            else
-                throw(DomainError("$T is not supported"))
-            end
-        else
-            throw(DomainError("$T is not supported"))
-        end
-    else           
-       throw(DomainError("$T is not supported"))
-    end   
-end
-
-readable(x::T, base::Int=10) where {T<:Number} =
-    readable(READABLE, x, base)
 
 end # Readables
