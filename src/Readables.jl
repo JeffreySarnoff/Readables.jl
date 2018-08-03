@@ -79,7 +79,7 @@ readable(x::T, base::Int=10) where {F, T<:Signed} =
 
 function readablestring(r::Readable, x::T, base::Int=10) where {T<:AbstractFloat}
     str = string(x)
-    return readable(r, str, base)
+    return readablestring(r, str, base)
 end
 
 readablestring(x::T, base::Int=10) where {T<:AbstractFloat} =
@@ -133,7 +133,7 @@ function readablestring(r::Readable, x::T, base::Int=10) where {F, T<:Complex{F}
     im = abs(im)
     re_str = readable(r, string(re), base)
     im_str = readable(r, string(im), base)
-    string(re_str, sgn, im_str, IMAG_UNIT_STR[1])
+    return string(re_str, sgn, im_str, IMAG_UNIT_STR[1])
 end
 
 readablestring(x::T, base::Int=10) where {F, T<:Complex{F}} =
@@ -188,7 +188,7 @@ function readablestring(r::Readable, x::T, y::T, unitstr::String, base::Int=10) 
     y = abs(y)
     xstr = readablestring(r, x, base)
     ystr = readablestring(r, y, base)
-    string(xstr, sgn, ystr, unitstr)
+    return string(xstr, sgn, ystr, unitstr)
 end
 
 readablestring(x::T, y::T, unitstr::String, base::Int=10) where {T<:Real} =
