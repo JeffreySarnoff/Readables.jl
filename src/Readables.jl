@@ -24,6 +24,11 @@ struct Readable
     end
 end
 
+Readable(;groupsize::Int) = Readable(intgroup=groupsize, fracgroup=groupsize)
+Readable(;sepchar::Char) = Readable(intsep=sepchar, fracsep=sepchar)
+Readable(;groupsize::Int, sepchar::Char) =
+    Readable(intgroup=groupsuze, fracgroup=groupsize, intsep=sepchar, fracsep=sepchar)
+
 const READABLE = Readable()
 
 decpoint(x::Readable) = x.decpoint
