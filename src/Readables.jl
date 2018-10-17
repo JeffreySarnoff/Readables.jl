@@ -1,6 +1,7 @@
 module Readables
 
 export Readable,
+       setreadables!
        readable, readablestring,
        decpoint, setdecpoint,
        intsep, setintsep, intgroup, setintgroup,
@@ -9,25 +10,90 @@ export Readable,
 const IMAG_UNIT_STR = ["𝛊"]
 const DUAL_UNIT_STR = ["ε"]
 
-struct Readable
-    decpoint::Char
-    intsep::Char
-    intgroup::Int
-    fracsep::Char
-    fracgroup::Int
+const IntGroupSize  = Ref(3)
+const FracGroupSize = Ref(5)
+const IntSepChar    = Ref(',')
+const FracSepChar   = Ref('_')
+const DecimalPoint  = Ref('.')
 
-    function Readable()
-        return new('.', ',', 3, '_', 5)
-    end
-    function Readable(;decpoint::Char='.', intsep::Char=',', intgroup::Int=3, fracsep::Char='_', fracgroup::Int=5)
-        return new(decpoint, intsep, intgroup, fracsep, fracgroup)
+function setreadables!(; intgroupsize::Int  = IntGroupSize[],
+                         fracgroupsize::Int = FracGroupSize[],
+                         intsepchar::Char   = IntSepChar[],
+                         fracsepchar::Char  = FracSepChar[],
+                         decimalpoint::Char = DecimalPoint[],
+                         )
+    IntGroupSize[]  = intgroupsize
+    FracGroupSize[] = fracgroupsize
+    IntSepChar[]    = intsepchar
+    FracSepChar[]   = fracsepchar
+    DecimalPoint[]  = decimalpoint
+    return nothing
+end
+
+
+struct Readable
+    intgroupsize::Int
+    fracgroupsize::Int
+    fracsepchar::Char
+    intsepchar::Char
+    decimalpoint::Char
+
+    function Readable(intgroupsize::Int, fracgroupsize::Int, intsepchar::Char, fracsepchar::Char, decimalpoint::Char)
+       if !(0 < intgroupsize && 0 < fracgroupsize)
+       throw(ErrorException("groups must be > 0 ($intgroupsize, $fracgroupsize)"))
+       end    
+       return new(intgroupsize, fracgroupsize, intsepchar, fracsepchar, decimalpoint)
     end
 end
 
-Readable(;groupby::Int) = Readable(intgroup=groupby, fracgroup=groupby)
-Readable(;sepchar::Char) = Readable(intsep=sepchar, fracsep=sepchar)
-Readable(;groupby::Int, sepchar::Char) =
-    Readable(intgroup=groupby, fracgroup=groupby, intsep=sepchar, fracsep=sepchar)
+julia> Readable(;groupby::Int=IntGroupSize[], sepchar::Char=IntSepChar[],
+                        intgroupsize::Int=groupby, 
+                        fracgroupsize::Int=(groupby != IntGroupSize[] ? groupby : FracGroupSize[]),
+                        intsepchar::Char=sepchar,
+                        fracsepchar::Char=(sepchar != IntSepChar[] ? sepchar : FracSepChar[]),
+                        decimalpoint::Char=DecimalPoint[]
+                        ) =
+                  Readable(intgroupsize, fracgroupsize, intsepchar, fracsepchar, decimalpoint)
+
+struct Readable
+    intgroupsize::Int
+    fracgroupsize::Int
+    fracsepchar::Char
+    intsepchar::Char
+    decimalpoint::Char
+
+    function Readable(intgroupsize::Int, fracgroupsize::Int, intsepchar::Char, fracsepchar::Char, decimalpoint::Char)
+        if !(0 < intgroupsize && 0 < fracgroupsize)
+            throw(ErrorException("groups must be > 0 ($intgroupsize, $fracgroupsize)"))
+        end
+        return new(intgroupsize, fracgroupsize, intsepchar, fracsepchar, decimalpoint)
+    end
+end
+
+Readable(;groupsize::Int=IntGroupSize[], sepchar::Char=IntSepChar[],
+          intgroupsize::Int=groupsize, 
+          fracgroupsize::Int=(groupsize != IntGroupSize[] ? groupsize : FracGroupSize[]),
+          intsepchar::Char=sepchar,
+          fracsepchar::Char=(sepchar != IntSepChar[] ? sepchar : FracSepChar[]),
+          decimalpoint::Char=DecimalPoint[]
+          ) =
+    Readable(intgroupsize, fracgroupsize, intsepchar, fracsepchar, decimalpoint)
+       
+
+
+const baseprefixes = Dict(2=>"0b", 8=>"0o", 10=>"", 16=>"0x")
+
+function baseprefix(x::Int)
+    res = get(baseprefixes, x, nothing)
+    res === nothing && throw(ErrorException("base $x is not supported"))
+    return res
+end
+
+
+
+
+
+
 
 const READABLE = Readable()
 
@@ -39,13 +105,6 @@ fracgroup(x::Readable) = x.fracgroup
 
 
 
-const baseprefixes = Dict(2=>"0b", 8=>"0o", 10=>"", 16=>"0x")
-
-function baseprefix(x::Int)
-    res = get(baseprefixes, x, nothing)
-    res === nothing && throw(ErrorException("base $x is not supported"))
-    return res
-end
 
 
 
