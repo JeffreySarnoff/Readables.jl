@@ -19,7 +19,7 @@ struct Readable
     function Readable()
         return new('.', ',', 3, '_', 5)
     end
-    function Readable(decpoint::Char, intsep::Char, intgroup::Int, fracsep::Char, fracgroup::Int)
+    function Readable(;decpoint::Char='.', intsep::Char=',', intgroup::Int=3, fracsep::Char='_', fracgroup::Int=5)
         return new(decpoint, intsep, intgroup, fracsep, fracgroup)
     end
 end
@@ -32,17 +32,7 @@ intgroup(x::Readable) = x.intgroup
 fracsep(x::Readable) = x.fracsep
 fracgroup(x::Readable) = x.fracgroup
 
-setdecpoint(x::Readable, decpoint::Char) = Readable(decpoint, x.intsep, x.intgroup, x.fracsep, x.fracgroup)
-setintsep(x::Readable, intsep::Char) = Readable(x.decpoint, intsep, x.intgroup, x.fracsep, x.fracgroup)
-setintgroup(x::Readable, intgroup::Int) = Readable(x.decpoint, x.intsep, intgroup, x.fracsep, x.fracgroup)
-setfracsep(x::Readable, fracsep::Char) = Readable(x.decpoint, x.intsep, x.intgroup, fracsep, x.fracgroup)
-setfracgroup(x::Readable, fracgroup::Int) = Readable(x.decpoint, x.intsep, x.intgroup, x.fracsep, fracgroup)
 
-setdecpoint(decpoint::Char) = setdecpoint(READABLE, decpoint)
-setintsep(intsep::Char) = setintsep(READABLE, intsep)
-setintgroup(intgroup::Int) = setintgroup(READABLE, intgroup)
-setfracsep(fracsep::Char) = setfracsep(READABLDE, fracsep)
-setfracgroup(fracgroup::Int) = setfracgroup(READABLE, fracgroup)
 
 const baseprefixes = Dict(2=>"0b", 8=>"0o", 10=>"", 16=>"0x")
 
