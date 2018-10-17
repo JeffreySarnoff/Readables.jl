@@ -24,10 +24,10 @@ struct Readable
     end
 end
 
-Readable(;groupsize::Int) = Readable(intgroup=groupsize, fracgroup=groupsize)
+Readable(;groupby::Int) = Readable(intgroup=groupby, fracgroup=groupby)
 Readable(;sepchar::Char) = Readable(intsep=sepchar, fracsep=sepchar)
-Readable(;groupsize::Int, sepchar::Char) =
-    Readable(intgroup=groupsuze, fracgroup=groupsize, intsep=sepchar, fracsep=sepchar)
+Readable(;groupby::Int, sepchar::Char) =
+    Readable(intgroup=groupby, fracgroup=groupby, intsep=sepchar, fracsep=sepchar)
 
 const READABLE = Readable()
 
@@ -50,12 +50,26 @@ end
 
 
 
+readablestring(x::T; base::Int=10, groupby::Int) = readablestring(Readable(groupby=groupby), x, base=base)
+readablestring(x::T; base::Int=10, sepwith::Char) = readablestring(Readable(sepwith=sepwith), x, base=base)
+readablestring(x::T; base::Int=10, groupby::Int, sepwith::Char) =
+    readablestring(Readable(groupby=groupby, sepwith=sepwith), x, base=base)
 
 readablestring(r::Readable, x::T, base::Int=10) where {T<:Signed} =
     readable_int(r, x, base)
 
 readablestring(x::T, base::Int=10) where {T<:Signed} =
     readablestring(READABLE, x, base)
+
+function readablestring(r::Readable, x::T, base::Int=10) where {T<:AbstractFloat}
+    str = string(x)
+    return readablestring(r, str, base)
+end
+
+readablestring(x::T, base::Int=10) where {T<:AbstractFloat} =
+    readablestring(READABLE, x, base)
+
+
 
 function readable(io::IO, r::Readable, x::T, base::Int=10) where {T<:Signed}
     str = readablestring(r, x, base)
@@ -71,14 +85,6 @@ readable(r::Readable, x::T, base::Int=10) where {T<:Signed} =
 readable(x::T, base::Int=10) where {F, T<:Signed} =
     readable(Base.stdout, READABLE, x, base)
 
-
-function readablestring(r::Readable, x::T, base::Int=10) where {T<:AbstractFloat}
-    str = string(x)
-    return readablestring(r, str, base)
-end
-
-readablestring(x::T, base::Int=10) where {T<:AbstractFloat} =
-    readablestring(READABLE, x, base)
 
 function readable(io::IO, r::Readable, x::T, base::Int=10) where {T<:AbstractFloat}
     str = readablestring(r, x, base)
