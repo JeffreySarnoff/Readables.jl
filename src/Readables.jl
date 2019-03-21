@@ -46,14 +46,14 @@ struct Readable
     end
 end
 
-julia> Readable(;groupby::Int=IntGroupSize[], sepchar::Char=IntSepChar[],
-                        intgroupsize::Int=groupby, 
-                        fracgroupsize::Int=(groupby != IntGroupSize[] ? groupby : FracGroupSize[]),
-                        intsepchar::Char=sepchar,
-                        fracsepchar::Char=(sepchar != IntSepChar[] ? sepchar : FracSepChar[]),
-                        decimalpoint::Char=DecimalPoint[]
-                        ) =
-                  Readable(intgroupsize, fracgroupsize, intsepchar, fracsepchar, decimalpoint)
+Readable(;groupby::Int=IntGroupSize[], sepchar::Char=IntSepChar[],
+    intgroupsize::Int=groupby, 
+    fracgroupsize::Int=(groupby != IntGroupSize[] ? groupby : FracGroupSize[]),
+    intsepchar::Char=sepchar,
+    fracsepchar::Char=(sepchar != IntSepChar[] ? sepchar : FracSepChar[]),
+    decimalpoint::Char=DecimalPoint[]
+    ) =
+    Readable(intgroupsize, fracgroupsize, intsepchar, fracsepchar, decimalpoint)
 
 struct Readable
     intgroupsize::Int
