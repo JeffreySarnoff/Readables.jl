@@ -109,9 +109,9 @@ fracgroup(x::Readable) = x.fracgroup
 
 
 
-readablestring(x::T; base::Int=10, groupby::Int) = readablestring(Readable(groupby=groupby), x, base=base)
-readablestring(x::T; base::Int=10, sepwith::Char) = readablestring(Readable(sepwith=sepwith), x, base=base)
-readablestring(x::T; base::Int=10, groupby::Int, sepwith::Char) =
+readablestring(x::T; base::Int=10, groupby::Int) where {T} = readablestring(Readable(groupby=groupby), x, base=base)
+readablestring(x::T; base::Int=10, sepwith::Char) where {T} = readablestring(Readable(sepwith=sepwith), x, base=base)
+readablestring(x::T; base::Int=10, groupby::Int, sepwith::Char) where {T} =
     readablestring(Readable(groupby=groupby, sepwith=sepwith), x, base=base)
 
 readablestring(r::Readable, x::T, base::Int=10) where {T<:Signed} =
