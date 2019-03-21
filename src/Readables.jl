@@ -301,23 +301,23 @@ function readable_int(r::Readable, x::I, base::Int=10) where {I<:Signed}
     numsign = signbit(x) ? "-" : ""
     str = string(abs(x), base=base)
     ndigs = length(str)
-    ngroups, firstgroup = divrem(ndigs, r.intgroup)
+    ngroups, firstgroup = divrem(ndigs, r.intgroupsize)
        
     ngroups == 0 && return str
               
     idx = firstgroup
     if idx > 0
-        res = string(str[1:idx], r.intsep)
+        res = string(str[1:idx], r.intsepchar)
     else
         res = ""
     end
        
     while ngroups > 1
-        res = string(res, str[idx+1:idx+r.intgroup], r.intsep)
-        idx += r.intgroup
+        res = string(res, str[idx+1:idx+r.intgroupsize], r.intsepchar)
+        idx += r.intgroupsize
         ngroups -= 1
     end
-    res = string(res, str[idx+1:idx+r.intgroup])
+    res = string(res, str[idx+1:idx+r.intgroupsize])
        
     return string(numsign, baseprefix(base), res)   
 end
@@ -329,7 +329,7 @@ function readable_frac(r::Readable, x::I, base::Int=10) where {I<:Signed}
     signbit(x) && throw(ErrorException("negative fractional parts ($x) are not allowed"))
     str = string(abs(x), base=base)
     ndigs = length(str)
-    ngroups, lastgroup = divrem(ndigs, r.fracgroup)
+    ngroups, lastgroup = divrem(ndigs, r.fracgroupsize)
        
     ngroups == 0 && return str
        
@@ -337,14 +337,14 @@ function readable_frac(r::Readable, x::I, base::Int=10) where {I<:Signed}
     res = ""
        
     while ngroups > 1
-        res = string(res, str[idx+1:idx+r.fracgroup], r.fracsep)
-        idx += r.fracgroup
+        res = string(res, str[idx+1:idx+r.fracgroupsize], r.fracsepchar)
+        idx += r.fracgroupsize
         ngroups -= 1
     end
     if lastgroup == 0
         res = string(res, str[idx+1:end])
     else
-        res = string(res, str[idx+1:idx+r.fracgroup], r.fracsep, str[idx+r.fracgroup+1:end])
+        res = string(res, str[idx+1:idx+r.fracgroupsize], r.fracsepchar, str[idx+r.fracgroupsize+1:end])
     end
    
     return res   
