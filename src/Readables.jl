@@ -1,7 +1,7 @@
 module Readables
 
 export Readable,
-       setreadables!
+       setreadables!,
        readable, readablestring,
        decpoint, setdecpoint,
        intsep, setintsep, intgroup, setintgroup,
