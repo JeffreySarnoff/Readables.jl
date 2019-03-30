@@ -1,4 +1,4 @@
-# Readables.jl
+# Readables.jl    [ do not use #master, pending revision ]
 ### Make extended precision numbers readable.
 
 | Copyright © 2018 by Jeffrey Sarnoff.  | This work is made available under The MIT License. |
