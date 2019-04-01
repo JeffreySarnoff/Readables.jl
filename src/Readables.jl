@@ -257,10 +257,10 @@ splitstr(str::AbstractString, at::Union{String, Char}) = String.(split(str, at))
 stripstr(str::AbstractString) = String(strip(str))
 
 function readablestring(r::Readable, str::String, base::Int=10)
-    if !occursin(READABLE.decpoint, str)
+    if !occursin(READABLE.decimalpoint, str)
        readable_int(r, BigInt(str), base)
     else
-       ipart, fpart = splitstr(str, READABLE.decpoint)
+       ipart, fpart = splitstr(str, READABLE.decimalpoint)
        if occursin("e", fpart)
           fpart, epart = splitstr(fpart, "e")
           epart = (epart[1] !== '-' && epart[1] !== '+') ? string("e+", epart) : string("e", epart)
@@ -269,7 +269,7 @@ function readablestring(r::Readable, str::String, base::Int=10)
        end
        ripart = readable_int(r, BigInt(ipart), base)
        rfpart = readable_frac(r, BigInt(fpart), base)
-       string(ripart, r.decpoint, rfpart, epart)
+       string(ripart, r.decimalpoint, rfpart, epart)
     end
 end
 
