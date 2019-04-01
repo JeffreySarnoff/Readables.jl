@@ -95,11 +95,6 @@ function setfracgroup(x::Readable, fracgroup::Int)
     return x
 end
 
-setintsep(x::Readable, intsep::Char)      = x.intsep    = intsep
-setintgroup(x::Readable, intgroup::Int)   = x.intgroup  = intgroup
-setfracsep(x::Readable, fracsep::Char)    = x.fracsep   = fracsep
-setfracgroup(x::Readable, fracgroup::Int) = x.fracgroup = fracgroup
-
 #  ---- ---- ---- ---- 
 
 function readablestring(x::T; base::Int=10, sepwith::Union{Nothing,Char}=nothing, groupby::Union{Nothing,Int}=nothing) where {T}
