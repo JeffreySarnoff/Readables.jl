@@ -30,31 +30,6 @@ function setreadables!(; intgroupsize::Int  = IntGroupSize[],
     return nothing
 end
 
-
-struct Readable
-    intgroupsize::Int
-    fracgroupsize::Int
-    fracsepchar::Char
-    intsepchar::Char
-    decimalpoint::Char
-
-    function Readable(intgroupsize::Int, fracgroupsize::Int, intsepchar::Char, fracsepchar::Char, decimalpoint::Char)
-       if !(0 < intgroupsize && 0 < fracgroupsize)
-       throw(ErrorException("groups must be > 0 ($intgroupsize, $fracgroupsize)"))
-       end    
-       return new(intgroupsize, fracgroupsize, intsepchar, fracsepchar, decimalpoint)
-    end
-end
-
-Readable(;groupby::Int=IntGroupSize[], sepchar::Char=IntSepChar[],
-    intgroupsize::Int=groupby, 
-    fracgroupsize::Int=(groupby != IntGroupSize[] ? groupby : FracGroupSize[]),
-    intsepchar::Char=sepchar,
-    fracsepchar::Char=(sepchar != IntSepChar[] ? sepchar : FracSepChar[]),
-    decimalpoint::Char=DecimalPoint[]
-    ) =
-    Readable(intgroupsize, fracgroupsize, intsepchar, fracsepchar, decimalpoint)
-
 struct Readable
     intgroupsize::Int
     fracgroupsize::Int
