@@ -89,25 +89,23 @@ function baseprefix(x::Int)
     return res
 end
 
-
-
-
-
-
+#  ---- ---- ---- ---- 
 
 const READABLE = Readable()
 
-decpoint(x::Readable) = x.decpoint
-intsep(x::Readable) = x.intsep
-intgroup(x::Readable) = x.intgroup
-fracsep(x::Readable) = x.fracsep
+decpoint(x::Readable)  = x.decpoint
+intsep(x::Readable)    = x.intsep
+intgroup(x::Readable)  = x.intgroup
+fracsep(x::Readable)   = x.fracsep
 fracgroup(x::Readable) = x.fracgroup
 
+setdecpoint(x::Readable, decpoint::Char)  = x.decpoint  = decpoint
+setintsep(x::Readable, intsep::Char)      = x.intsep    = intsep
+setintgroup(x::Readable, intgroup::Int)   = x.intgroup  = intgroup
+setfracsep(x::Readable, fracsep::Char)    = x.fracsep   = fracsep
+setfracgroup(x::Readable, fracgroup::Int) = x.fracgroup = fracgroup
 
-
-
-
-
+#  ---- ---- ---- ---- 
 
 readablestring(x::T; base::Int=10, groupby::Int) where {T} = readablestring(Readable(groupby=groupby), x, base=base)
 readablestring(x::T; base::Int=10, sepwith::Char) where {T} = readablestring(Readable(sepwith=sepwith), x, base=base)
