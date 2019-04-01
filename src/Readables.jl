@@ -69,29 +69,29 @@ end
 const READABLE = Readable()
 
 decpoint(x::Readable)  = x.decimalpoint
-intsep(x::Readable)    = x.intsep
-intgroup(x::Readable)  = x.intgroup
-fracsep(x::Readable)   = x.fracsep
-fracgroup(x::Readable) = x.fracgroup
+intsep(x::Readable)    = x.intsepchar
+intgroup(x::Readable)  = x.intgroupsize
+fracsep(x::Readable)   = x.fracsepchar
+fracgroup(x::Readable) = x.fracgroupsize
 
 function setdecpoint(x::Readable, decpoint::Char)
     x.decimalpoint = decpoint
     return x
 end
 function setintsep(x::Readable, intsep::Char)
-    x.intsep = intsep
+    x.intsepchar = intsep
     return x
 end
 function setintgroup(x::Readable, intgroup::Int)
-    x.intgroup = intgroup
+    x.intgroupsize = intgroup
     return x
 end
 function setfracsep(x::Readable, fracsep::Char)
-    x.fracsep = fracsep
+    x.fracsepchar = fracsep
     return x
 end
 function setfracgroup(x::Readable, fracgroup::Int)
-    x.fracgroup = fracgroup
+    x.fracgroupsize = fracgroup
     return x
 end
 
