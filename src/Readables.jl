@@ -107,10 +107,19 @@ setfracgroup(x::Readable, fracgroup::Int) = x.fracgroup = fracgroup
 
 #  ---- ---- ---- ---- 
 
-readablestring(x::T; base::Int=10, groupby::Int) where {T} = readablestring(Readable(groupby=groupby), x, base=base)
-readablestring(x::T; base::Int=10, sepwith::Char) where {T} = readablestring(Readable(sepwith=sepwith), x, base=base)
-readablestring(x::T; base::Int=10, groupby::Int, sepwith::Char) where {T} =
-    readablestring(Readable(groupby=groupby, sepwith=sepwith), x, base=base)
+function readablestring(x::T; base::Int=10, sepwith::Union{Nothing,Char}=nothing, groupby::Union{Nothing,Int}=nothing)
+    if isnothing(sepwith)
+        if isnothing(groupby)
+            readablestring(x, base=base)
+        else
+            readablestring(Readable(groupby=groupby), x, base=base)
+        end
+    elseif isnothing(groupby)
+        readablestring(Readable(sepwith=sepwith), x, base=base)
+    else
+        readablestring(Readable(groupby=groupby, sepwith=sepwith), x, base=base)    
+    end
+end
 
 readablestring(r::Readable, x::T, base::Int=10) where {T<:Signed} =
     readable_int(r, x, base)
