@@ -87,10 +87,10 @@ function readablestring(x::T; base::Int=10, sepwith::Union{Nothing,Char}=nothing
         if isnothing(groupby)
             readablestring(x, base=base)
         else
-            readablestring(Readable(groupby=groupby), x, base=base)
+            readablestring(Readable(groupby=groupby, sepwith = intsep(READABLE)), x, base=base)
         end
     elseif isnothing(groupby)
-        readablestring(Readable(sepwith=sepwith), x, base=base)
+        readablestring(Readable(sepwith=sepwith, groupby=intgroup(READABLE)), x, base=base)
     else
         readablestring(Readable(groupby=groupby, sepwith=sepwith), x, base=base)    
     end
