@@ -30,7 +30,7 @@ function setreadables!(; intgroupsize::Int  = IntGroupSize[],
     return nothing
 end
 
-struct Readable
+mutable struct Readable
     intgroupsize::Int
     fracgroupsize::Int
     fracsepchar::Char
