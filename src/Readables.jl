@@ -107,7 +107,7 @@ setfracgroup(x::Readable, fracgroup::Int) = x.fracgroup = fracgroup
 
 #  ---- ---- ---- ---- 
 
-function readablestring(x::T; base::Int=10, sepwith::Union{Nothing,Char}=nothing, groupby::Union{Nothing,Int}=nothing)
+function readablestring(x::T; base::Int=10, sepwith::Union{Nothing,Char}=nothing, groupby::Union{Nothing,Int}=nothing) where {T}
     if isnothing(sepwith)
         if isnothing(groupby)
             readablestring(x, base=base)
