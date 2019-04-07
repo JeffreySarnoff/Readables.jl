@@ -45,11 +45,10 @@ mutable struct Readable
     end
 end
 
-Readable(;groupsize::Int=IntGroupSize[], sepchar::Char=IntSepChar[],
-          intgroupsize::Int=groupsize, 
-          fracgroupsize::Int=(groupsize != IntGroupSize[] ? groupsize : FracGroupSize[]),
-          intsepchar::Char=sepchar,
-          fracsepchar::Char=(sepchar != IntSepChar[] ? sepchar : FracSepChar[]),
+Readable(;intgroup::Int=IntGroupSize[], 
+          fracgroup::Int=FracGroupSize[],
+          intsep::Char=IntSepChar[],
+          fracsep::Char=FracSepChar[],
           decimalpoint::Char=DecimalPoint[]
           ) =
     Readable(intgroupsize, fracgroupsize, intsepchar, fracsepchar, decimalpoint)
