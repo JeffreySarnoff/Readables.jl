@@ -1,7 +1,6 @@
 module Readables
 
 export Readable,
-       setreadables!,
        readable, readablestring,
        decpoint, setdecpoint,
        intsep, setintsep, intgroup, setintgroup,
@@ -16,25 +15,11 @@ const IntSepChar    = Ref(',')
 const FracSepChar   = Ref('_')
 const DecimalPoint  = Ref('.')
 
-function setreadables!(; intgroupsize::Int  = IntGroupSize[],
-                         fracgroupsize::Int = FracGroupSize[],
-                         intsepchar::Char   = IntSepChar[],
-                         fracsepchar::Char  = FracSepChar[],
-                         decimalpoint::Char = DecimalPoint[],
-                         )
-    IntGroupSize[]  = intgroupsize
-    FracGroupSize[] = fracgroupsize
-    IntSepChar[]    = intsepchar
-    FracSepChar[]   = fracsepchar
-    DecimalPoint[]  = decimalpoint
-    return nothing
-end
-
 mutable struct Readable
     intgroupsize::Int
     fracgroupsize::Int
-    fracsepchar::Char
     intsepchar::Char
+    fracsepchar::Char
     decimalpoint::Char
 
     function Readable(intgroupsize::Int, fracgroupsize::Int, intsepchar::Char, fracsepchar::Char, decimalpoint::Char)
