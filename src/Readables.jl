@@ -51,7 +51,7 @@ Readable(;intgroup::Int=IntGroupSize[],
           fracsep::Char=FracSepChar[],
           decimalpoint::Char=DecimalPoint[]
           ) =
-    Readable(intgroupsize, fracgroupsize, intsepchar, fracsepchar, decimalpoint)
+    Readable(intgroup, fracgroup, intsep, fracsep, decimalpoint)
        
 
 
