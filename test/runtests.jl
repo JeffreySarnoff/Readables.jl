@@ -1,7 +1,6 @@
 using Readables, Test
 
 # using the default settings
-setreadables!()
 
 @test readablestring(0) == "0"
 @test readablestring(12) == "12"
