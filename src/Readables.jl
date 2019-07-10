@@ -1,5 +1,42 @@
 module Readables
 
+const MaybeChar = Union{Nothing, Char}
+
+const FieldNames = (:intgroup, :fracgroup, :intsep, :fracsep, :decpoint, :intmidsep, :fracmidsep)
+const FieldTypes = (Int, Int, Char, Char, Char, MaybeChar, MaybeChar)
+const FieldInits = (intgroup = 3, fracgroup = 5, intsep = ',', fracsep = '_', decpoint = '.', intmidsep = nothing, fracmidsep = nothing)
+
+struct Readable
+       intgroup::Int
+       fracgroup::Int
+       intsep::Char
+       fracsep::Char
+       decpoint::Char
+       intmidsep::MaybeChar
+       fracmidsep::MaybeChar
+       
+       Readable() = new(Tuple(FieldInits)...,)
+       
+       Readable(intgroup::Int=3, fracgroup::Int=5, intsep::Char=',', fracsep::Char='_', decpoint::Char='.', intmidsep::MaybeChar=nothing, fracmidsep::MaybeChar=nothing) =
+           new(intgroup=intgroup, fracgroup=fracgroup, intsep=intsep, fracsep=fracsep, decpoint=decpoint, intmidsep=intmidsep, fracmidsep=fracmidsep)
+end
+
+function Readable(signed_int::I) where {I<:Signed}
+    str = readablestring(signed_int; intgroup=Readable.intgroup, intsep=Readable.intsep, intmidsep=Readable.intmidsep)
+end
+
+end # Readables
+
+
+
+
+
+
+
+
+
+
+
 export Readable,
        readable, readablestring,
        decpoint, setdecpoint,
