@@ -31,13 +31,7 @@ end # Readables
 
 
 
-
-
-
-
-
-
-
+#=
 
 export Readable,
        readable, readablestring,
@@ -388,3 +382,4 @@ Base.BigInt(str::SubString) = BigInt(String(str))
 
 
 end # Readables
+=#
