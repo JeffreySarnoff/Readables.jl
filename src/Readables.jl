@@ -15,7 +15,9 @@ struct Readable
        intmidsep::MaybeChar
        fracmidsep::MaybeChar
        
-       Readable() = new(Tuple(FieldInits)...,)
+       Readable() = let fi=FieldInits
+              new(fi.intgroup, fi.fracgroup, fi.intsep, fi.fracsep, fi.decpoint, fi.intmidsep, fi.fracmidsep)
+       end       
        
        Readable(intgroup::Int=3, fracgroup::Int=5, intsep::Char=',', fracsep::Char='_', decpoint::Char='.', intmidsep::MaybeChar=nothing, fracmidsep::MaybeChar=nothing) =
            new(intgroup=intgroup, fracgroup=fracgroup, intsep=intsep, fracsep=fracsep, decpoint=decpoint, intmidsep=intmidsep, fracmidsep=fracmidsep)
