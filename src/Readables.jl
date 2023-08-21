@@ -122,7 +122,7 @@ readable(io::IO, x::T, base::Int=10) where {T<:Signed} =
 readable(r::Readable, x::T, base::Int=10) where {T<:Signed} =
     readable(Base.stdout, r, x, base)
 
-readable(x::T, base::Int=10) where {F, T<:Signed} =
+readable(x::T, base::Int=10) where {T<:Signed} =
     readable(Base.stdout, READABLE, x, base)
 
 
@@ -137,7 +137,7 @@ readable(io::IO, x::T, base::Int=10) where {T<:AbstractFloat} =
 readable(r::Readable, x::T, base::Int=10) where {T<:AbstractFloat} =
     readable(Base.stdout, r, x, base)
 
-readable(x::T, base::Int=10) where {F, T<:AbstractFloat} =
+readable(x::T, base::Int=10) where {T<:AbstractFloat} =
     readable(Base.stdout, READABLE, x, base)
 
 
@@ -162,7 +162,7 @@ readable(io::IO, x::T, base::Int=10) where {T<:Real} =
 readable(r::Readable, x::T, base::Int=10) where {T<:Real} =
     readable(Base.stdout, r, x, base)
 
-readable(x::T, base::Int=10) where {F, T<:Real} =
+readable(x::T, base::Int=10) where {T<:Real} =
     readable(Base.stdout, READABLE, x, base)
 
 
