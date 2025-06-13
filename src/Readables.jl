@@ -37,8 +37,6 @@ Readable(;intgroup::Int=IntGroupSize[],
           decimalpoint::Char=DecimalPoint[]
           ) =
     Readable(intgroup, fracgroup, intsep, fracsep, decimalpoint)
-       
-
 
 const baseprefixes = Dict(2=>"0b", 8=>"0o", 10=>"", 16=>"0x")
 
@@ -109,8 +107,6 @@ end
 readablestring(x::T, base::Int=10) where {T<:AbstractFloat} =
     readablestring(READABLE, x, base)
 
-
-
 function readable(io::IO, r::Readable, x::T, base::Int=10) where {T<:Signed}
     str = readablestring(r, x, base)
     print(io, str)
@@ -125,7 +121,6 @@ readable(r::Readable, x::T, base::Int=10) where {T<:Signed} =
 readable(x::T, base::Int=10) where {T<:Signed} =
     readable(Base.stdout, READABLE, x, base)
 
-
 function readable(io::IO, r::Readable, x::T, base::Int=10) where {T<:AbstractFloat}
     str = readablestring(r, x, base)
     print(io, str)
@@ -139,9 +134,6 @@ readable(r::Readable, x::T, base::Int=10) where {T<:AbstractFloat} =
 
 readable(x::T, base::Int=10) where {T<:AbstractFloat} =
     readable(Base.stdout, READABLE, x, base)
-
-
-
 
 function readablestring(r::Readable, x::T, base::Int=10) where {T<:Real}
     str = string(x)
@@ -164,8 +156,6 @@ readable(r::Readable, x::T, base::Int=10) where {T<:Real} =
 
 readable(x::T, base::Int=10) where {T<:Real} =
     readable(Base.stdout, READABLE, x, base)
-
-
 
 function readablestring(r::Readable, x::T, base::Int=10) where {F, T<:Complex{F}}
     re = real(x)
@@ -193,8 +183,6 @@ readable(r::Readable, x::T, base::Int=10) where {F, T<:Complex{F}} =
 
 readable(x::T, base::Int=10) where {F, T<:Complex{F}} =
     readable(Base.stdout, READABLE, x, base)
-
-
 
 function readablestring(r::Readable, x::T, base::Int=10) where {T<:Number}
      if hasmethod(real, (T,))
@@ -250,8 +238,6 @@ readable(r::Readable, x::T, base::Int=10) where {T<:Number} =
 readable(x::T, base::Int=10) where {T<:Number} =
     readable(Base.stdout, READABLE, x, base)
 
-
-
 splitstr(str::AbstractString, at::Union{String, Char}) = String.(split(str, at))
 stripstr(str::AbstractString) = String(strip(str))
 
@@ -271,12 +257,9 @@ function readablestring(r::Readable, str::String, base::Int=10)
        string(ripart, r.decimalpoint, rfpart, epart)
     end
 end
-
        
 readablestring(x::String, base::Int=10) =
     readablestring(READABLE, x, base)
-
-
 
 function readable_int(r::Readable, x::I, base::Int=10) where {I<:Signed}
     numsign = signbit(x) ? "-" : ""
@@ -305,7 +288,6 @@ end
 
 readable_int(x::I, base::Int=10) where {I<:Signed} = readable(READABLE, x, base)
 
-
 function readable_frac(r::Readable, x::I, base::Int=10) where {I<:Signed}
     signbit(x) && throw(ErrorException("negative fractional parts ($x) are not allowed"))
     str = string(abs(x), base=base)
@@ -333,7 +315,6 @@ end
 
 readable_frac(x::I, base::Int=10) where {I<:Signed} = readable_frac(READABLE, x, base)
 
-
 function Base.BigInt(str::AbstractString)
    s = stripstr(str)
    nchars = length(s)
@@ -346,6 +327,5 @@ function Base.BigInt(str::AbstractString)
 end
 
 Base.BigInt(str::SubString) = BigInt(String(str))
-
 
 end # Readables
